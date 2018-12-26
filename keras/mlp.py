@@ -18,6 +18,9 @@ model.add(Dense(10, activation='softmax'))
 # model.trainable = False
 
 print(model.summary())
+print(model.layers)
+print(model.inputs)
+print(model.outputs)
 
 sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
 model.compile(loss='categorical_crossentropy',

@@ -52,4 +52,6 @@ ax.scatter3D(x1, x2, y_op, c=y_op, cmap="Reds")
 print(ham(1.85, 0.7))
 plt.show()
 
+print('Nam')
+
 

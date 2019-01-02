@@ -5,7 +5,7 @@ from tensorflow.examples.tutorials.mnist import input_data
 mnist = input_data.read_data_sets('./data', one_hot=True)
 
 lr = 1e-3
-training_step = 20000
+training_step = 30000
 batch_size = 128
 display_step = 200                                
 
@@ -61,7 +61,7 @@ with tf.Session() as sess:
 
     print("Optimization Finished!")
 
-    test_len = 128
+    test_len = 512
     test_data = mnist.test.images[:test_len].reshape((-1, timesteps, num_input))
     test_label = mnist.test.labels[:test_len]
     print("Testing Accuracy: ", \

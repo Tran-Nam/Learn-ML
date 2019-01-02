@@ -5,7 +5,7 @@ from tensorflow.examples.tutorials.mnist import input_data
 mnist = input_data.read_data_sets('./data', one_hot=True)
 
 lr = 1e-3
-training_step = 30000
+training_step = 10000
 batch_size = 128
 display_step = 200                                
 
@@ -43,6 +43,8 @@ accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
 
 init = tf.global_variables_initializer()
 
+saver = tf.train.Saver()
+
 with tf.Session() as sess:
     sess.run(init)
 
@@ -58,11 +60,28 @@ with tf.Session() as sess:
             print("Step " + str(step) + ", Minibatch Loss " + \
             "{:.4f}".format(loss)+ ", Training Accuracy: " + \
             "{:.3f}".format(acc))
+        
+    save_path = saver.save(sess, './RNN/model.ckpt')
+    print("Model saved in ", save_path)
 
     print("Optimization Finished!")
 
-    test_len = 512
+    test_len = 128
     test_data = mnist.test.images[:test_len].reshape((-1, timesteps, num_input))
     test_label = mnist.test.labels[:test_len]
     print("Testing Accuracy: ", \
     sess.run(accuracy, {X: test_data, Y: test_label}))
+
+
+# saver = tf.train.Saver()
+# with tf.Session() as sess:
+with tf.Session() as sess:
+    saver.restore(sess, './RNN/model.ckpt')
+    print("Model restored!")
+
+    test_len = 128
+    test_data = mnist.test.images[:test_len].reshape((-1, timesteps, num_input))
+    test_label = mnist.test.labels[:test_len]
+    print("Testing Accuracy: ", \
+    sess.run(accuracy, {X: test_data, Y: test_label}))
+

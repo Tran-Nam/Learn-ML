@@ -20,9 +20,10 @@ Y = tf.placeholder('float', [None, num_class], name='Y')
 graph = tf.Graph()
 with graph.as_default():
     with tf.Session() as sess:
-        saver = tf.train.import_meta_graph('./RNN/model-2000.meta')
+        # graph = tf.get_default_graph()
+        saver = tf.train.import_meta_graph('./RNN/model-4000.meta')
         # saver.restore(sess, tf.train.latest_checkpoint('./RNN/'))
-        saver.restore(sess, './RNN/model-2000')
+        saver.restore(sess, './RNN/model-4000')
         # print(sess.run('bias: 0'))
         # graph = tf.get_default_graph()
         # name = [tensor.name for tensor in tf.get_default_graph().as_graph_def().node]

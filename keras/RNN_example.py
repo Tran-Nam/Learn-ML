@@ -30,6 +30,7 @@ bias = {
 def RNN(x, weights, bias):
     x = tf.unstack(x, timesteps, 1)
     lstm_cell = rnn.BasicLSTMCell(num_hidden, forget_bias=1.)
+    # lstm_cell = rnn.DropoutWrapper(lstm_cell, output_keep_prob=0.5)
     outputs, states = rnn.static_rnn(lstm_cell, x, dtype=tf.float32)
     return tf.matmul(outputs[-1], weights['out']) + bias['out']
 
@@ -56,6 +57,7 @@ with tf.Session() as sess:
         batch_x = batch_x.reshape((batch_size, timesteps, num_input))
 
         sess.run(train_op, {X: batch_x, Y: batch_y})
+        # print(sess.run(global_step))
 
         if step%display_step == 0 or step == 1:
             loss, acc = sess.run([loss_op, accuracy], {X:batch_x, Y: batch_y})
@@ -64,9 +66,9 @@ with tf.Session() as sess:
             "{:.4f}".format(loss)+ ", Training Accuracy: " + \
             "{:.3f}".format(acc))
         
-        if step%save_step == 0 or step == 1:
-            save_path = saver.save(sess, './RNN/model', global_step=global_step)
-            print("Model saved in ", save_path)
+        # if step%save_step == 0 or step == 1:
+        #     save_path = saver.save(sess, './RNN/model', global_step=global_step)
+        #     print("Model saved in ", save_path)
 
     # print("Optimization Finished!")
 

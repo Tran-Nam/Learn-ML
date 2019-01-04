@@ -20,10 +20,13 @@ Y = tf.placeholder('float', [None, num_class], name='Y')
 graph = tf.Graph()
 with graph.as_default():
     with tf.Session() as sess:
-        saver = tf.train.import_meta_graph('./RNN/model.meta')
-        saver.restore(sess, tf.train.latest_checkpoint('./RNN/'))
+        saver = tf.train.import_meta_graph('./RNN/model-2000.meta')
+        # saver.restore(sess, tf.train.latest_checkpoint('./RNN/'))
+        saver.restore(sess, './RNN/model-2000')
         # print(sess.run('bias: 0'))
         # graph = tf.get_default_graph()
+        # name = [tensor.name for tensor in tf.get_default_graph().as_graph_def().node]
+        # print(name)
         X = graph.get_tensor_by_name('X: 0')
         Y = graph.get_tensor_by_name('Y: 0')
         # print(X.get_shape())
@@ -49,10 +52,10 @@ with graph.as_default():
                 "{:.4f}".format(loss)+ ", Training Accuracy: " + \
                 "{:.3f}".format(acc))
 
-        save_path = saver.save(sess, './RNN/model_con')
-        print("Model saved in ", save_path)
+        # save_path = saver.save(sess, './RNN/model_con')
+        # print("Model saved in ", save_path)
 
-        print("Optimization Finished!")
+        # print("Optimization Finished!")
 
         test_len = 128
         test_data = mnist.test.images[:test_len].reshape((-1, timesteps, num_input))

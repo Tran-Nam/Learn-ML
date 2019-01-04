@@ -7,7 +7,8 @@ mnist = input_data.read_data_sets('./data', one_hot=True)
 lr = 1e-3
 training_step = 10000
 batch_size = 128
-display_step = 200                                
+display_step = 200  
+save_step = 2000                              
 
 num_input = 28
 timesteps = 28
@@ -16,6 +17,7 @@ num_class = 10
 
 X = tf.placeholder('float', [None, timesteps, num_input], name='X')
 Y = tf.placeholder('float', [None, num_class], name='Y')
+global_step = tf.Variable(0, dtype=tf.int32, trainable=False, name='global_step')
 
 weights = {
     'out': tf.Variable(tf.random_normal([num_hidden, num_class]), name='weights')
@@ -36,12 +38,13 @@ prediction = tf.nn.softmax(logits, name='prediction')
 
 loss_op = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=Y), name='loss_op')
 optimizer = tf.train.GradientDescentOptimizer(learning_rate=lr)
-train_op = optimizer.minimize(loss_op, name='train_op')
+train_op = optimizer.minimize(loss_op, global_step=global_step, name='train_op')
 
 correct_pred = tf.equal(tf.argmax(prediction, 1), tf.argmax(Y, 1))
 accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32), name='accuracy')
 
 init = tf.global_variables_initializer()
+
 
 saver = tf.train.Saver()
 
@@ -61,8 +64,9 @@ with tf.Session() as sess:
             "{:.4f}".format(loss)+ ", Training Accuracy: " + \
             "{:.3f}".format(acc))
         
-    save_path = saver.save(sess, './RNN/model')
-    print("Model saved in ", save_path)
+        if step%save_step == 0 or step == 1:
+            save_path = saver.save(sess, './RNN/model', global_step=global_step)
+            print("Model saved in ", save_path)
 
     # print("Optimization Finished!")
 

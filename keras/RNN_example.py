@@ -34,9 +34,9 @@ def RNN(x, weights, bias):
 logits = RNN(X, weights, bias)
 prediction = tf.nn.softmax(logits, name='prediction')
 
-loss_op = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=Y))
+loss_op = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=Y), name='loss_op')
 optimizer = tf.train.GradientDescentOptimizer(learning_rate=lr)
-train_op = optimizer.minimize(loss_op)
+train_op = optimizer.minimize(loss_op, name='train_op')
 
 correct_pred = tf.equal(tf.argmax(prediction, 1), tf.argmax(Y, 1))
 accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32), name='accuracy')

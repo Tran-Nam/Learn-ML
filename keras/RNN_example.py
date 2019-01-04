@@ -14,15 +14,15 @@ timesteps = 28
 num_hidden = 128
 num_class = 10
 
-X = tf.placeholder('float', [None, timesteps, num_input])
-Y = tf.placeholder('float', [None, num_class])
+X = tf.placeholder('float', [None, timesteps, num_input], name='X')
+Y = tf.placeholder('float', [None, num_class], name='Y')
 
 weights = {
-    'out': tf.Variable(tf.random_normal([num_hidden, num_class]))
+    'out': tf.Variable(tf.random_normal([num_hidden, num_class]), name='weights')
 }
 
 bias = {
-     'out': tf.Variable(tf.random_normal([num_class]))
+     'out': tf.Variable(tf.random_normal([num_class]), name='bias')
 }
 
 def RNN(x, weights, bias):
@@ -32,14 +32,14 @@ def RNN(x, weights, bias):
     return tf.matmul(outputs[-1], weights['out']) + bias['out']
 
 logits = RNN(X, weights, bias)
-prediction = tf.nn.softmax(logits)
+prediction = tf.nn.softmax(logits, name='prediction')
 
 loss_op = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=Y))
 optimizer = tf.train.GradientDescentOptimizer(learning_rate=lr)
 train_op = optimizer.minimize(loss_op)
 
 correct_pred = tf.equal(tf.argmax(prediction, 1), tf.argmax(Y, 1))
-accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
+accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32), name='accuracy')
 
 init = tf.global_variables_initializer()
 
@@ -61,27 +61,37 @@ with tf.Session() as sess:
             "{:.4f}".format(loss)+ ", Training Accuracy: " + \
             "{:.3f}".format(acc))
         
-    save_path = saver.save(sess, './RNN/model.ckpt')
+    save_path = saver.save(sess, './RNN/model')
     print("Model saved in ", save_path)
 
-    print("Optimization Finished!")
+    # print("Optimization Finished!")
 
-    test_len = 128
-    test_data = mnist.test.images[:test_len].reshape((-1, timesteps, num_input))
-    test_label = mnist.test.labels[:test_len]
-    print("Testing Accuracy: ", \
-    sess.run(accuracy, {X: test_data, Y: test_label}))
+    # test_len = 128
+    # test_data = mnist.test.images[:test_len].reshape((-1, timesteps, num_input))
+    # test_label = mnist.test.labels[:test_len]
+    # print("Testing Accuracy: ", \
+    # sess.run(accuracy, {X: test_data, Y: test_label}))
 
 
 # saver = tf.train.Saver()
 # with tf.Session() as sess:
-with tf.Session() as sess:
-    saver.restore(sess, './RNN/model.ckpt')
-    print("Model restored!")
+# with tf.Session() as sess:
+#     saver.restore(sess, './RNN/model.ckpt')
+#     print("Model restored!")
 
-    test_len = 128
-    test_data = mnist.test.images[:test_len].reshape((-1, timesteps, num_input))
-    test_label = mnist.test.labels[:test_len]
-    print("Testing Accuracy: ", \
-    sess.run(accuracy, {X: test_data, Y: test_label}))
+#     test_len = 128
+#     test_data = mnist.test.images[:test_len].reshape((-1, timesteps, num_input))
+#     test_label = mnist.test.labels[:test_len]
+#     print("Testing Accuracy: ", \
+#     sess.run(accuracy, {X: test_data, Y: test_label}))
+
+# with tf.Session() as sess:
+#     saver.restore(sess, './RNN/model.ckpt')
+#     print("Model restored!")
+
+#     test_len = 128
+#     test_data = mnist.test.images[:test_len].reshape((-1, timesteps, num_input))
+#     test_label = mnist.test.labels[:test_len]
+#     print("Testing Accuracy: ", \
+#     sess.run(accuracy, {X: test_data, Y: test_label}))
 
